@@ -1,4 +1,4 @@
-package com.hms.backend.config;
+package com.example.hms_backend.security;
 
 import com.example.hms_backend.authentication.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
