@@ -1,5 +1,0 @@
-[build]
-buildCommand = "cd hms-backend && mvn -B clean package -DskipTests"
-
-[start]
-startCommand = "java -jar hms-backend/target/*.jar"
