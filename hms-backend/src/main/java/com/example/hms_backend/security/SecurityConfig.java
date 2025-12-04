@@ -1,4 +1,4 @@
-package com.example.hms_backend.security;
+package com.hms.backend.config;
 
 import com.example.hms_backend.authentication.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,8 +94,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173","http://localhost:5175",
-                "http://localhost:5176","http://localhost:5174","https://*.railway.app","https://incredible-playfulness-production-0e24.up.railway.app")); // React dev server
+        config.addAllowedOriginPattern("*");
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
