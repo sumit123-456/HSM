@@ -1,0 +1,3 @@
+[submodule "hms-frontend"]
+	path = hms-frontend
+	url = https://github.com/mru3318/hms-frontend.git

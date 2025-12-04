@@ -1,0 +1,240 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+    background-color: #f4f7f6;
+    padding: 20px;
+}
+
+.form-card {
+    max-width: 100%;
+    margin: 20px auto;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.form-header {
+    background-color: #01b6be;
+    color: #ffffff;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.form-header i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.form-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.form-body {
+    padding: 25px;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -10px;
+    margin-right: -10px;
+    align-items: flex-end;
+}
+
+.form-group {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+}
+
+.form-group label .required {
+    color: red;
+}
+
+.form-control,
+textarea.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+textarea.form-control {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.form-control:focus {
+    border-color: #03a9f3;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(3, 169, 243, 0.25);
+}
+
+.form-control:read-only {
+    background-color: #e9ecef;
+}
+
+.auto-fill-field {
+    background-color: #e9ecef;
+}
+
+.calculated-field {
+    background-color: #d1ecf1;
+    font-weight: bold;
+}
+
+.radio-group {
+    display: flex;
+    align-items: center;
+    padding-top: 8px;
+}
+
+.radio-item {
+    display: flex;
+    align-items: center;
+    margin-right: 25px;
+}
+
+.radio-item input[type="radio"] {
+    margin-right: 8px;
+}
+
+.action-buttons {
+    display: flex;
+}
+
+.btn-action {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-left: 5px;
+}
+
+.btn-add {
+    background-color: #03a9f3;
+}
+
+.btn-remove {
+    background-color: #f44336;
+}
+
+.form-footer {
+    background-color: #f8f9fa;
+    padding: 15px 25px;
+    text-align: right;
+    border-top: 1px solid #e0e0e0;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: 500;
+}
+
+.btn-reset {
+    background-color: #6c757d;
+    color: white;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.btn-reset:hover {
+    background-color: #5a6268;
+    font-weight: bold;
+}
+
+.btn-save {
+    background-color: #01c0c8;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-save:hover {
+    background-color: #01b6be;
+    font-weight: bold;
+}
+
+@media (min-width: 768px) {
+    .col-md-2 {
+        flex: 0 0 16.6666%;
+        max-width: 16.6666%;
+    }
+
+    .col-md-5 {
+        flex: 0 0 41.6667%;
+        max-width: 41.6667%;
+    }
+
+    .col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-footer {
+        text-align: center;
+    }
+
+    .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .btn-reset {
+        margin-right: 0;
+    }
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+}

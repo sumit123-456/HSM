@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!DOCTYPE html>
+        <html lang="en" xmlns:th="http://www.thymeleaf.org">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Super Admin Dashboard</title>
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f6fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #4c6ef5;
+            margin-bottom: 20px;
+        }
+        .card {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background: #f0f2ff;
+        }
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            color: #4c6ef5;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Super Admin Dashboard</h1>
+   
+    <div class="card">
+        <h3>User Management</h3>
+        <a th:href="@{/admin/users}">Manage Users</a>
+    </div>
+
+    <div class="card">
+        <h3>Roles & Permissions</h3>
+        <a th:href="@{/admin/roles}">Manage Roles</a>
+        <a th:href="@{/admin/permissions}">Manage Permissions</a>
+    </div>
+
+    <div class="card">
+        <h3>System Settings</h3>
+        <a th:href="@{/admin/settings}">Configure System</a>
+    </div>
+
+    <div class="card">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+</title>
+</head>
+<body>
+
+</body>
+</html>

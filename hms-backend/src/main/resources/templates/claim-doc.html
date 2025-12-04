@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim Document Management</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .form-card {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .form-header {
+            background: linear-gradient(135deg, #01b6be, #0288d1);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .form-header i {
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+        .form-header h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+        .form-body {
+            padding: 30px;
+        }
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .section-title {
+            color: #01b6be;
+            border-bottom: 2px solid #01b6be;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .document-card {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .document-card:hover {
+            border-color: #01b6be;
+            background: #e3f2fd;
+        }
+        .document-card.dragover {
+            border-color: #01b6be;
+            background: #bbdefb;
+        }
+        .file-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            background: white;
+        }
+        .file-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            color: #01b6be;
+        }
+        .file-info {
+            flex: 1;
+        }
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .file-size {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-verified { background: #d1edff; color: #004085; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        .btn-custom {
+            background: #01b6be;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        .btn-custom:hover {
+            background: #0288d1;
+            color: white;
+        }
+        .progress {
+            height: 8px;
+            margin-top: 5px;
+        }
+        .document-type-badge {
+            background: #e9ecef;
+            color: #495057;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Response Message -->
+    <div id="responseMessage" style="display: none;"></div>
+
+    <!-- Document Upload Form -->
+    <div class="form-card">
+        <div class="form-header">
+            <i class="fas fa-file-upload"></i>
+            <h3>Claim Document Management</h3>
+        </div>
+
+        <div class="form-body">
+            <!-- Claim Selection Section -->
+            <div class="form-section">
+                <h4 class="section-title">
+                    <i class="fas fa-search"></i> Select Claim
+                </h4>
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label class="form-label">Search Claims <span class="text-danger">*</span></label>
+                        <select class="form-select" id="claimSelect" required onchange="loadClaimDetails()">
+                            <option value="">Select Claim...</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Claim Status</label>
+                        <input type="text" class="form-control" id="claimStatus" readonly>
+                    </div>
+                </div>
+
+                <!-- Claim Details -->
+                <div id="claimDetails" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Patient:</strong> <span id="claimPatient"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Insurance:</strong> <span id="claimInsurance"></span>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <strong>Claim Amount:</strong> ₹<span id="claimAmount"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Diagnosis:</strong> <span id="claimDiagnosis"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Upload Section -->
+            <div class="form-section" id="uploadSection" style="display: none;">
+                <h4 class="section-title">
+                    <i class="fas fa-cloud-upload-alt"></i> Upload Documents
+                </h4>
+
+                <!-- Document Type Selection -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Document Type <span class="text-danger">*</span></label>
+                        <select class="form-select" id="documentType" required>
+                            <option value="">Select Document Type...</option>
+                            <option value="PRESCRIPTION">Prescription</option>
+                            <option value="LAB_REPORT">Lab Report</option>
+                            <option value="DISCHARGE_SUMMARY">Discharge Summary</option>
+                            <option value="FINAL_BILL">Final Bill</option>
+                            <option value="INVESTIGATION_REPORT">Investigation Report</option>
+                            <option value="PRE_AUTH_APPROVAL">Pre-Auth Approval</option>
+                            <option value="KYC_DOCUMENT">KYC Document</option>
+                            <option value="POLICE_FIR">Police FIR (Accident)</option>
+                            <option value="INSURANCE_CARD">Insurance Card</option>
+                            <option value="OTHER">Other Document</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Document Name</label>
+                        <input type="text" class="form-control" id="documentName" placeholder="Enter document name...">
+                    </div>
+                </div>
+
+                <!-- File Upload Area -->
+                <div class="document-card" id="dropZone">
+                    <i class="fas fa-cloud-upload-alt fa-3x mb-3" style="color: #01b6be;"></i>
+                    <h5>Drop files here or click to upload</h5>
+                    <p class="text-muted">Supported formats: PDF, JPG, PNG, DOC, DOCX</p>
+                    <p class="text-muted">Max file size: 10MB</p>
+                    <input type="file" id="fileInput" multiple style="display: none;" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+                    <button type="button" class="btn btn-custom mt-2" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-folder-open"></i> Browse Files
+                    </button>
+                </div>
+
+                <!-- Selected Files List -->
+                <div class="mt-4">
+                    <h6>Selected Files</h6>
+                    <div class="file-list" id="fileList">
+                        <!-- Files will be listed here -->
+                    </div>
+                </div>
+
+                <!-- Upload Progress -->
+                <div class="mt-3" id="uploadProgress" style="display: none;">
+                    <div class="d-flex justify-content-between">
+                        <span>Uploading...</span>
+                        <span id="progressText">0%</span>
+                    </div>
+                    <div class="progress">
+                        <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Existing Documents Section -->
+            <div class="form-section" id="existingDocuments" style="display: none;">
+                <h4 class="section-title">
+                    <i class="fas fa-files"></i> Existing Documents
+                </h4>
+                <div id="documentsList">
+                    <!-- Existing documents will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <div class="form-footer" style="padding: 20px; background: #f8f9fa; text-align: right; border-top: 1px solid #e0e0e0;">
+            <button type="button" class="btn btn-secondary me-2" onclick="resetForm()">
+                <i class="fas fa-redo"></i> Reset
+            </button>
+            <button type="button" class="btn btn-custom" id="uploadBtn" onclick="uploadDocuments()" disabled>
+                <i class="fas fa-upload"></i> Upload Documents
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap & jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    let claims = [];
+    let selectedFiles = [];
+    let currentClaimId = null;
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadClaims();
+        setupDragAndDrop();
+        setupFileInput();
+    });
+
+    // Load claims for dropdown
+    async function loadClaims() {
+        try {
+            const response = await fetch('/api/claims');
+            claims = await response.json();
+
+            const select = document.getElementById('claimSelect');
+            select.innerHTML = '<option value="">Select Claim...</option>';
+
+            claims.forEach(claim => {
+                const option = document.createElement('option');
+                option.value = claim.id;
+                option.textContent = `${claim.claimNumber} - ${claim.patientName} - ₹${claim.totalClaimAmount}`;
+                select.appendChild(option);
+            });
+        } catch (error) {
+            showMessage('Error loading claims', 'danger');
+        }
+    }
+
+    // Load claim details when selected
+    function loadClaimDetails() {
+        const claimId = document.getElementById('claimSelect').value;
+        if (!claimId) {
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('existingDocuments').style.display = 'none';
+            return;
+        }
+
+        currentClaimId = claimId;
+        const claim = claims.find(c => c.id == claimId);
+
+        if (claim) {
+            document.getElementById('claimStatus').value = claim.claimStatus;
+            document.getElementById('claimPatient').textContent = claim.patientName;
+            document.getElementById('claimInsurance').textContent = claim.insuranceName;
+            document.getElementById('claimAmount').textContent = claim.totalClaimAmount;
+            document.getElementById('claimDiagnosis').textContent = claim.diagnosis;
+
+            document.getElementById('claimDetails').style.display = 'block';
+            document.getElementById('uploadSection').style.display = 'block';
+
+            loadExistingDocuments(claimId);
+        }
+    }
+
+    // Setup drag and drop
+    function setupDragAndDrop() {
+        const dropZone = document.getElementById('dropZone');
+
+        dropZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', function() {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        dropZone.addEventListener('click', function() {
+            document.getElementById('fileInput').click();
+        });
+    }
+
+    // Setup file input
+    function setupFileInput() {
+        const fileInput = document.getElementById('fileInput');
+        fileInput.addEventListener('change', function() {
+            handleFiles(this.files);
+        });
+    }
+
+    // Handle selected files
+    function handleFiles(files) {
+        for (let file of files) {
+            // Validate file size (10MB limit)
+            if (file.size > 10 * 1024 * 1024) {
+                showMessage(`File ${file.name} is too large. Maximum size is 10MB.`, 'warning');
+                continue;
+            }
+
+            // Validate file type
+            const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg',
+                              'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            if (!validTypes.includes(file.type)) {
+                showMessage(`File ${file.name} has invalid format. Supported formats: PDF, JPG, PNG, DOC, DOCX`, 'warning');
+                continue;
+            }
+
+            // Add to selected files
+            if (!selectedFiles.find(f => f.name === file.name && f.size === file.size)) {
+                selectedFiles.push(file);
+                addFileToList(file);
+            }
+        }
+
+        updateUploadButton();
+    }
+
+    // Add file to the list
+    function addFileToList(file) {
+        const fileList = document.getElementById('fileList');
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item';
+        fileItem.innerHTML = `
+            <div class="file-icon">
+                <i class="fas fa-file-pdf"></i>
+            </div>
+            <div class="file-info">
+                <div class="file-name">${file.name}</div>
+                <div class="file-size">${formatFileSize(file.size)}</div>
+            </div>
+            <div class="file-actions">
+                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeFile('${file.name}', ${file.size})">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+        fileList.appendChild(fileItem);
+    }
+
+    // Remove file from list
+    function removeFile(fileName, fileSize) {
+        selectedFiles = selectedFiles.filter(f => !(f.name === fileName && f.size === fileSize));
+        document.getElementById('fileList').innerHTML = '';
+        selectedFiles.forEach(addFileToList);
+        updateUploadButton();
+    }
+
+    // Format file size
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // Update upload button state
+    function updateUploadButton() {
+        const uploadBtn = document.getElementById('uploadBtn');
+        const documentType = document.getElementById('documentType').value;
+        uploadBtn.disabled = !(selectedFiles.length > 0 && documentType && currentClaimId);
+    }
+
+    // Upload documents
+    async function uploadDocuments() {
+        if (!currentClaimId || selectedFiles.length === 0) {
+            showMessage('Please select a claim and files to upload', 'warning');
+            return;
+        }
+
+        const documentType = document.getElementById('documentType').value;
+        const documentName = document.getElementById('documentName').value || selectedFiles[0].name;
+
+        // Show progress
+        const progressDiv = document.getElementById('uploadProgress');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        progressDiv.style.display = 'block';
+
+        try {
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const file = selectedFiles[i];
+
+                // Update progress
+                const progress = ((i + 1) / selectedFiles.length) * 100;
+                progressBar.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '%';
+
+                // Create form data
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('claimId', currentClaimId);
+                formData.append('documentType', documentType);
+                formData.append('documentName', documentName || file.name);
+
+                // Upload file
+                const response = await fetch('/api/claim-documents/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to upload ${file.name}`);
+                }
+            }
+
+            showMessage('Documents uploaded successfully!', 'success');
+            resetUploadSection();
+            loadExistingDocuments(currentClaimId);
+
+        } catch (error) {
+            showMessage('Error uploading documents: ' + error.message, 'danger');
+        } finally {
+            progressDiv.style.display = 'none';
+            progressBar.style.width = '0%';
+            progressText.textContent = '0%';
+        }
+    }
+
+    // Load existing documents for the claim
+    async function loadExistingDocuments(claimId) {
+        try {
+            const response = await fetch(`/api/claim-documents/claim/${claimId}`);
+            const documents = await response.ok ? await response.json() : [];
+
+            const documentsList = document.getElementById('documentsList');
+            documentsList.innerHTML = '';
+
+            if (documents.length === 0) {
+                documentsList.innerHTML = '<p class="text-muted">No documents uploaded yet.</p>';
+            } else {
+                documents.forEach(doc => {
+                    const docElement = document.createElement('div');
+                    docElement.className = 'file-item';
+                    docElement.innerHTML = `
+                        <div class="file-icon">
+                            <i class="fas fa-file-${getFileIcon(doc.documentType)}"></i>
+                        </div>
+                        <div class="file-info">
+                            <div class="file-name">${doc.documentName}</div>
+                            <div class="file-size">
+                                <span class="document-type-badge">${doc.documentType}</span>
+                                • ${doc.fileSize ? formatFileSize(doc.fileSize) : 'Unknown size'}
+                                • Uploaded: ${doc.uploadedAt}
+                            </div>
+                        </div>
+                        <div class="file-actions">
+                            <span class="status-badge status-${doc.isVerified ? 'verified' : 'pending'}">
+                                ${doc.isVerified ? 'Verified' : 'Pending'}
+                            </span>
+                            <button class="btn btn-sm btn-outline-primary" onclick="downloadDocument(${doc.id})">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteDocument(${doc.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    documentsList.appendChild(docElement);
+                });
+            }
+
+            document.getElementById('existingDocuments').style.display = 'block';
+        } catch (error) {
+            console.error('Error loading documents:', error);
+        }
+    }
+
+    // Get file icon based on type
+    function getFileIcon(documentType) {
+        const icons = {
+            'PRESCRIPTION': 'prescription',
+            'LAB_REPORT': 'flask',
+            'DISCHARGE_SUMMARY': 'file-medical',
+            'FINAL_BILL': 'file-invoice-dollar',
+            'INVESTIGATION_REPORT': 'search',
+            'PRE_AUTH_APPROVAL': 'clipboard-check',
+            'KYC_DOCUMENT': 'id-card',
+            'POLICE_FIR': 'shield-alt',
+            'INSURANCE_CARD': 'credit-card',
+            'OTHER': 'file'
+        };
+        return icons[documentType] || 'file';
+    }
+
+    // Download document
+    async function downloadDocument(documentId) {
+        try {
+            const response = await fetch(`/api/claim-documents/${documentId}/download`);
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `document-${documentId}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                showMessage('Error downloading document', 'danger');
+            }
+        } catch (error) {
+            showMessage('Error downloading document', 'danger');
+        }
+    }
+
+    // Delete document
+    async function deleteDocument(documentId) {
+        if (confirm('Are you sure you want to delete this document?')) {
+            try {
+                const response = await fetch(`/api/claim-documents/${documentId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showMessage('Document deleted successfully', 'success');
+                    loadExistingDocuments(currentClaimId);
+                } else {
+                    showMessage('Error deleting document', 'danger');
+                }
+            } catch (error) {
+                showMessage('Error deleting document', 'danger');
+            }
+        }
+    }
+
+    // Reset upload section
+    function resetUploadSection() {
+        selectedFiles = [];
+        document.getElementById('fileList').innerHTML = '';
+        document.getElementById('fileInput').value = '';
+        document.getElementById('documentType').value = '';
+        document.getElementById('documentName').value = '';
+        updateUploadButton();
+    }
+
+    // Reset entire form
+    function resetForm() {
+        document.getElementById('claimSelect').value = '';
+        document.getElementById('claimDetails').style.display = 'none';
+        document.getElementById('uploadSection').style.display = 'none';
+        document.getElementById('existingDocuments').style.display = 'none';
+        resetUploadSection();
+    }
+
+    // Show message
+    function showMessage(message, type) {
+        const messageDiv = document.getElementById('responseMessage');
+        messageDiv.innerHTML = `
+            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+        messageDiv.style.display = 'block';
+
+        if (type === 'success') {
+            setTimeout(() => messageDiv.style.display = 'none', 5000);
+        }
+    }
+
+    // Event listeners for form changes
+    document.getElementById('documentType').addEventListener('change', updateUploadButton);
+    document.getElementById('documentName').addEventListener('input', updateUploadButton);
+</script>
+</body>
+</html>

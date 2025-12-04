@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harishchandra Medicity - Login</title>
+
+    <!-- CSS -->
+    <link th:href="@{/css/login.css}" rel="stylesheet">
+</head>
+<body>
+
+<!-- Left Section -->
+<div class="left">
+    <div class="caption">
+        <h2>Harishchandra Medicity</h2>
+        <p>"Your health, our priority. Trusted care for every family."</p>
+    </div>
+</div>
+
+<!-- Right Section -->
+<div class="right">
+    <div class="form-container">
+        <h2>Welcome To Harishchandra Medicity</h2>
+        <p>Please login to continue</p>
+
+        <!-- Login Form -->
+        <form th:action="@{/login}" method="post">
+            <input type="text" name="username" placeholder="Email" required>
+            <div class="error" th:if="${param.error}" style="color:red;">
+                Invalid username or password
+            </div>
+
+            <input type="password" name="password" placeholder="Password" required>
+
+            <div class="forgot"><a href="#">Forgot password?</a></div>
+
+            <button type="submit" class="btn">Log In</button>
+
+            <!-- Logout message -->
+            <div th:if="${param.logout}" style="color:green;">
+                You have been logged out.
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- JS -->
+<script th:src="@{/javascript/login.js}"></script>
+</body>
+</html>

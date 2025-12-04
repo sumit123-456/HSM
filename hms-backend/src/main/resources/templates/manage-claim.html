@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Claim Management</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .form-card {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .form-header {
+            background: linear-gradient(135deg, #01b6be, #0288d1);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-header i {
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+
+        .form-header h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .form-body {
+            padding: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
+        .section-title {
+            color: #01b6be;
+            border-bottom: 2px solid #01b6be;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .form-control:read-only {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+
+        .auto-fill-field {
+            background-color: #e3f2fd !important;
+        }
+
+        .calculated-field {
+            background-color: #e8f5e8 !important;
+            font-weight: bold;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-draft {
+            background: #ffeb3b;
+            color: #333;
+        }
+
+        .status-submitted {
+            background: #2196f3;
+            color: white;
+        }
+
+        .status-approved {
+            background: #4caf50;
+            color: white;
+        }
+
+        .status-rejected {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-custom {
+            background: #01b6be;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .btn-custom:hover {
+            background: #0288d1;
+            color: white;
+        }
+
+        .claim-timeline {
+            border-left: 3px solid #01b6be;
+            padding-left: 20px;
+            margin-left: 10px;
+        }
+
+        .timeline-item {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -26px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #01b6be;
+        }
+
+        /* Status badges */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-approved {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-pending {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .status-rejected {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .status-processing {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        /* PDF Preview styling */
+        #pdfPreviewContainer {
+            transition: all 0.3s ease;
+        }
+
+        #pdfPreview {
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Button loading state */
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <!-- Response Message -->
+    <div id="responseMessage" style="display: none;"></div>
+
+    <!-- Claims List Section -->
+    <div class="form-card mt-4" id="claimsList" style="display: none;">
+        <div class="form-header">
+            <i class="fas fa-list"></i>
+            <h3>Existing Claims</h3>
+        </div>
+        <div class="form-body">
+            <div class="table-responsive">
+                <table class="table table-striped" id="claimsTable">
+                    <thead>
+                    <tr>
+                        <th>Claim No</th>
+                        <th>Patient</th>
+                        <th>Insurance</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="claimsTableBody">
+                    <!-- Claims will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Claim Details Modal -->
+    <div class="modal fade" id="claimDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Claim Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="claimDetailsContent">
+                    <!-- Claim details will be loaded here -->
+                </div>
+                    <!-- PDF Preview Container -->
+                <div id="pdfPreviewContainer" class="mt-4 d-none">
+                    <h6>PDF Preview</h6>
+                    <div class="border rounded p-3 bg-light">
+                        <iframe id="pdfPreview" width="100%" height="400" style="border: none;"></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="downloadPdfBtn" onclick="generateClaimPdf()">
+                    <i class="fas fa-download"></i> Download as PDF
+                </button>
+                <button type="button" class="btn btn-success d-none" id="confirmDownloadBtn"
+                        onclick="confirmDownloadPdf()">
+                    <i class="fas fa-file-download"></i> Confirm Download
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap & jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/claim.js}"></script>
+</body>
+
+</html>

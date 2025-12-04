@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
+
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- plugins:css -->
+    <link
+            rel="stylesheet"
+            href="assets/vendors/simple-line-icons/css/simple-line-icons.css"
+    />
+    <link
+            rel="stylesheet"
+            href="assets/vendors/flag-icon-css/css/flag-icons.min.css"
+    />
+    <link rel="stylesheet" href="assets/vendors/css/vendor.bundle.base.css" />
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link
+            rel="stylesheet"
+            href="assets/vendors/font-awesome/css/font-awesome.min.css"
+    />
+    <link
+            rel="stylesheet"
+            href="assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css"
+    />
+    <link
+            rel="stylesheet"
+            href="assets/vendors/jvectormap/jquery-jvectormap.css"
+    />
+    <link
+            rel="stylesheet"
+            href="assets/vendors/daterangepicker/daterangepicker.css"
+    />
+    <link rel="stylesheet" href="assets/vendors/chartist/chartist.min.css" />
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="assets/css/vertical-light-layout/style.css" />
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="assets/images/logo-mini.png" />
+
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    />
+    <link
+            rel="stylesheet"
+            href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css"
+    />
+    <link
+            rel="stylesheet"
+            href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css"
+    />
+    <link
+            rel="stylesheet"
+            href="assets/css/vertical-light-layout/add-asset.css"
+    />
+
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <!-- Flatpickr CSS for calendar -->
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+
+    <link
+            rel="stylesheet"
+            href="assets/css/vertical-light-layout/add-asset.css"
+    />
+
+    <!-- Font Awesome -->
+    <script
+            src="https://kit.fontawesome.com/b475359de1.js"
+            crossorigin="anonymous"
+    ></script>
+
+    <link rel="stylesheet" th:href="@{/css/add-asset.css}">
+
+
+</head>
+<body>
+<div class="asset-card">
+    <div class="asset-header">
+        <i class="fa-solid fa-boxes-stacked"></i>
+        <h3>Asset Registration Form</h3>
+    </div>
+
+    <!-- Success message -->
+    <div th:if="${message}" class="alert alert-success text-center" th:text="${message}"></div>
+
+
+    <form th:action="@{/add-asset}" th:object="${asset}" method="post" id="uniqueAssetForm" novalidate>
+        <div class="asset-body">
+            <div class="asset-row">
+                <div class="asset-group asset-col">
+                    <label for="uniqueDepartment"
+                    >Asset Category
+                        <span class="required">*</span></label>
+                    <select id="uniqueDepartment" th:field="*{departmentBranch}">
+                        <option value=""> Select Category</option>
+                        <option value="Medical Equipment">Medical Equipment</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="IT Equipment">IT Equipment </option>
+                        <option value="Hospital Vehicles">Hospital Vehicles</option>
+                        <option value="Other Assets">Other Assets</option>
+                    </select>
+                    <div class="error-text" id="uniqueDepartmentError"></div>
+                </div>
+                <div class="asset-group asset-col">
+                    <label for="uniqueAssetId"
+                    >Asset ID <span class="required">*</span></label
+                    >
+                    <input
+                            type="text"
+                            th:field="*{assetId}"
+                            id="uniqueAssetId"
+                            placeholder="Enter Asset ID"
+                    />
+                    <div class="error-text" id="uniqueAssetIdError"></div>
+                </div>
+            </div>
+
+            <div class="asset-row">
+                <div class="asset-group asset-col">
+                    <label for="uniqueSerialNumber"
+                    >Asset Name <span class="required">*</span></label
+                    >
+                    <input
+                            type="text"
+                            id="uniqueSerialNumber"
+                            th:field="*{assetName}"
+                            placeholder="Enter Serial Number"
+                    />
+                    <div
+                            class="error-text"
+                            id="uniqueSerialNumberError"
+                    ></div>
+                </div>
+
+                <div class="asset-group asset-col">
+                    <label for="uniqueVendor"
+                    >Vendor <span class="required">*</span></label
+                    >
+                    <input
+                            type="text"
+                            id="uniqueVendor"
+                            th:field="*{vendor}"
+                            placeholder="Enter Vendor Name"
+                            oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')"
+                    />
+                    <div class="error-text" id="uniqueVendorError"></div>
+                </div>
+            </div>
+
+            <div class="asset-row">
+                <div class="asset-group asset-col">
+                    <label for="uniquePurchaseDate"
+                    >Purchase Date <span class="required">*</span></label
+                    >
+                    <input
+                            type="text"
+                            id="uniquePurchaseDate"
+                            th:field="*{purchaseDate}"
+                            placeholder="Select Purchase Date"
+                    />
+                    <div
+                            class="error-text"
+                            id="uniquePurchaseDateError"
+                    ></div>
+                </div>
+
+                <div class="asset-group asset-col">
+                    <label for="uniqueWarranty"
+                    >Warranty <span class="required">*</span></label
+                    >
+                    <input
+                            type="text"
+                            id="uniqueWarranty"
+                            th:field="*{warrantyDate}"
+                            placeholder="Select Warranty Date"
+                    />
+                    <div class="error-text" id="uniqueWarrantyError"></div>
+                </div>
+            </div>
+
+            <div class="asset-row">
+                <div class="asset-group asset-col">
+                    <label for="assetCondition">Asset-Condition <span class="required">*</span></label>
+                    <select id="assetCondition" th:field="*{assetCondition}">
+                        <option value="">Select Condition</option>
+                        <option value="New">New</option>
+                        <option value="Used">Used</option>
+                        <option value="Damaged">Damaged</option>
+                    </select>
+                </div>
+                <div class="asset-group asset-col">
+                    <label for="uniqueRemarks">Remarks</label>
+                    <textarea
+                            id="uniqueRemarks"
+                            th:field="*{remarksNotes}"
+                            placeholder="Enter any remarks..."
+                    ></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="asset-footer">
+            <button type="reset" class="action-btn reset-btn">
+                Reset
+            </button>
+            <button type="submit" class="action-btn btn btn-success save-btn">
+                Save
+            </button>
+        </div>
+    </form>
+</div>
+<script src="assets/vendors/js/vendor.bundle.base.js"></script>
+<script src="assets/vendors/chart.js/chart.umd.js"></script>
+<script src="assets/vendors/jvectormap/jquery-jvectormap.min.js"></script>
+<script src="assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+<script src="assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+<script src="assets/vendors/moment/moment.min.js"></script>
+<script src="assets/vendors/daterangepicker/daterangepicker.js"></script>
+<script src="assets/vendors/chartist/chartist.min.js"></script>
+<script src="assets/vendors/progressbar.js/progressbar.min.js"></script>
+<script src="assets/js/jquery.cookie.js"></script>
+<script src="assets/js/off-canvas.js"></script>
+<script src="assets/js/hoverable-collapse.js"></script>
+<script src="assets/js/misc.js"></script>
+<script src="assets/js/settings.js"></script>
+<script th:src="@{assets/}" src="assets/js/todolist.js"></script>
+<script src="assets/js/dashboard.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="assets/js/add-asset.js"></script>
+<script th:src="@{/js/add-asset.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<head>
+    <title>Departments</title>
+</head>
+<body>
+
+<h2>Department List</h2>
+
+<a href="/departments/new">+ Add Department</a>
+<br/><br/>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Head</th>
+        <th>Description</th>
+        <th>Actions</th> <!-- ✅ New column for buttons -->
+    </tr>
+    <tr th:each="dept : ${departments}">
+        <td th:text="${dept.id}"></td>
+        <td th:text="${dept.department_name}"></td>
+        <td th:text="${dept.department_head}"></td>
+        <td th:text="${dept.description}"></td>
+
+        <!-- ✅ Action Buttons -->
+        <td>
+            <!-- View -->
+            <a th:href="@{/department/view/{id}(id=${dept.id})}" sec:authorize="hasAuthority('DEPARTMENT_VIEW')">View</a> |
+
+            <!-- Update -->
+            <a th:href="@{/department/update/{id}(id=${dept.id})}" sec:authorize="hasAuthority('DEPARTMENT_UPDATE')">Update</a> |
+
+            <!-- Delete -->
+            <a th:href="@{/department/delete/{id}(id=${dept.id})}" sec:authorize="hasAuthority('DEPARTMENT_DELETE')"
+               onclick="return confirm('Are you sure you want to delete this department?')">
+                Delete
+            </a>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

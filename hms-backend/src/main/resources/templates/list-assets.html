@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Asset Management</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/asset-list.css}">
+
+    <style>
+        .table-container { margin-top: 20px; }
+        .card-header.bg-primary { background-color: #01C0C8 !important; color: #fff; }
+        .btn-primary { background-color: #0d6efd; border: none; }
+        .btn-primary:hover { background-color: #0b5ed7; }
+        .table th, .table td { vertical-align: middle; text-align: center; }
+        .pagination .active a { background-color: #0d6efd; color: #fff; border-color: #0d6efd; }
+        .pagination li.disabled a { pointer-events: none; color: #6c757d; }
+        .search-container .form-label { font-weight: 500; }
+        .status-active { color: #28a745; font-weight: bold; }
+        .status-inactive { color: #dc3545; font-weight: bold; }
+        .status-maintenance { color: #ffc107; font-weight: bold; }
+        .badge-success { background-color: #28a745; }
+        .badge-warning { background-color: #ffc107; color: #212529; }
+        .badge-danger { background-color: #dc3545; }
+    </style>
+</head>
+
+<body>
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="container-fluid">
+
+            <!-- Card Section -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-center">
+                    <i class="fa-solid fa-toolbox me-2"></i> Asset Management
+                </div>
+
+                <div class="card-body">
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <a th:href="@{/add-asset}" class="btn btn-primary">
+                            <i class="fa-solid fa-plus me-2"></i>Add New Asset
+                        </a>
+                        <button id="refreshBtn" class="btn btn-outline-secondary">
+                            <i class="fa-solid fa-refresh me-2"></i>Refresh
+                        </button>
+                    </div>
+
+                    <!-- Search & Filters -->
+<!--                    <div class="search-container">-->
+<!--                        <div class="row g-3 mb-3">-->
+<!--                            <div class="col-md-4">-->
+<!--                                <label class="form-label">Search</label>-->
+<!--                                <div class="input-group">-->
+<!--                                    <input type="text" id="searchInput" class="form-control"-->
+<!--                                           placeholder="Search by Asset ID, Name, Vendor...">-->
+<!--                                    <button class="btn btn-outline-secondary" type="button" id="clearSearch">-->
+<!--                                        <i class="fa-solid fa-times"></i>-->
+<!--                                    </button>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-3">-->
+<!--                                <label class="form-label">Category</label>-->
+<!--                                <select id="categoryFilter" class="form-select">-->
+<!--                                    <option value="">All Categories</option>-->
+<!--                                    <option value="Medical Equipment">Medical Equipment</option>-->
+<!--                                    <option value="Furniture">Furniture</option>-->
+<!--                                    <option value="IT Equipment">IT Equipment</option>-->
+<!--                                    <option value="Hospital Vehicles">Hospital Vehicles</option>-->
+<!--                                    <option value="Other Assets">Other Assets</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-3">-->
+<!--                                <label class="form-label">Condition</label>-->
+<!--                                <select id="conditionFilter" class="form-select">-->
+<!--                                    <option value="">All Conditions</option>-->
+<!--                                    <option value="New">New</option>-->
+<!--                                    <option value="Used">Used</option>-->
+<!--                                    <option value="Damaged">Damaged</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-2">-->
+<!--                                <label class="form-label">&nbsp;</label>-->
+<!--                                <button id="applyFilters" class="btn btn-primary w-100">-->
+<!--                                    <i class="fa-solid fa-filter me-2"></i>Apply-->
+<!--                                </button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+                    <!-- Asset Table -->
+                    <div class="table-container">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead class="table-primary text-center">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Category</th>
+                                    <th>Asset ID</th>
+                                    <th>Asset Name</th>
+                                    <th>Vendor</th>
+                                    <th>Purchase Date</th>
+                                    <th>Warranty Date</th>
+                                    <th>Condition</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody id="assetTableBody">
+                                <tr th:each="asset, stat : ${assetsPage.content}">
+                                    <td th:text="${stat.index + 1 + (assetsPage.number * assetsPage.size)}"></td>
+                                    <td th:text="${asset.departmentBranch}"></td>
+                                    <td th:text="${asset.assetId}"></td>
+                                    <td th:text="${asset.assetName}"></td>
+                                    <td th:text="${asset.vendor}"></td>
+                                    <td th:text="${#temporals.format(asset.purchaseDate, 'dd-MM-yyyy')}"></td>
+                                    <td th:text="${#temporals.format(asset.warrantyDate, 'dd-MM-yyyy')}"></td>
+                                    <td>
+                                        <!-- Fixed Thymeleaf ternary expression -->
+                                        <span th:class="${asset.assetCondition == 'New'} ? 'badge badge-success' :
+                                                       (${asset.assetCondition == 'Used'} ? 'badge badge-warning' : 'badge badge-danger')"
+                                              th:text="${asset.assetCondition}">
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <!-- Fixed Thymeleaf ternary expression -->
+                                        <span th:class="${asset.status == 'ACTIVE'} ? 'status-active' :
+                                                       (${asset.status == 'INACTIVE'} ? 'status-inactive' : 'status-maintenance')"
+                                              th:text="${asset.status}">
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <!-- Edit button -->
+<!--                                        <a th:href="@{'/edit-asset/' + ${asset.id}}" class="btn btn-sm btn-warning" title="Edit">-->
+<!--                                            <i class="fa-solid fa-pen"></i>-->
+<!--                                        </a>-->
+
+                                        <!-- Delete button using SweetAlert -->
+                                        <button type="button" class="btn btn-sm btn-danger delete-btn" th:data-id="${asset.id}" title="Delete">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(assetsPage.content)}">
+                                    <td colspan="10" class="text-center text-muted">No assets found.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav th:if="${assetsPage.totalPages > 1}">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${assetsPage.first} ? 'disabled' : ''">
+                                <a class="page-link" th:href="@{/view-assets(page=0)}">First</a>
+                            </li>
+                            <li class="page-item" th:classappend="${assetsPage.hasPrevious()} ? '' : 'disabled'">
+                                <a class="page-link" th:href="@{/view-assets(page=${assetsPage.number-1})}">Previous</a>
+                            </li>
+                            <li th:each="i : ${#numbers.sequence(0, assetsPage.totalPages-1)}"
+                                class="page-item" th:classappend="${i == assetsPage.number} ? 'active' : ''">
+                                <a class="page-link" th:href="@{/view-assets(page=${i})}" th:text="${i+1}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${assetsPage.hasNext()} ? '' : 'disabled'">
+                                <a class="page-link" th:href="@{/view-assets(page=${assetsPage.number+1})}">Next</a>
+                            </li>
+                            <li class="page-item" th:classappend="${assetsPage.last} ? 'disabled' : ''">
+                                <a class="page-link" th:href="@{/view-assets(page=${assetsPage.totalPages-1})}">Last</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <!-- Asset Count -->
+                    <div class="text-muted text-center mt-3">
+                        Showing <span th:text="${assetsPage.number * assetsPage.size + 1}">0</span>
+                        to <span th:text="${(assetsPage.number * assetsPage.size) + assetsPage.numberOfElements}">0</span>
+                        of <span th:text="${assetsPage.totalElements}">0</span> assets
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/js/asset-list.js}"></script>
+
+<!-- Success Message Alert -->
+<script th:if="${successMessage}">
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: /*[[${successMessage}]]*/ '',
+            confirmButtonColor: '#0d6efd',
+            timer: 3000,
+            timerProgressBar: true
+        });
+    });
+</script>
+
+<!-- Delete Confirmation Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Delete confirmation
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        deleteButtons.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const assetId = this.getAttribute('data-id');
+                const assetName = this.closest('tr').querySelector('td:nth-child(4)').textContent;
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    html: `You are about to delete asset: <strong>${assetName}</strong><br>This action cannot be undone!`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Submit delete request
+                        fetch(`/view-assets/delete/${assetId}`, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        }).then(response => {
+                            if (response.ok) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Deleted!',
+                                    text: 'Asset has been deleted successfully.',
+                                    confirmButtonColor: '#0d6efd',
+                                    timer: 2000,
+                                    timerProgressBar: true
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Failed to delete asset.',
+                                    confirmButtonColor: '#d33'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+        // Refresh button
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            location.reload();
+        });
+
+        // Clear search
+        document.getElementById('clearSearch').addEventListener('click', function() {
+            document.getElementById('searchInput').value = '';
+            // Trigger search to refresh results
+            document.getElementById('searchInput').dispatchEvent(new Event('input'));
+        });
+
+        // Apply filters
+        document.getElementById('applyFilters').addEventListener('click', function() {
+            // Trigger search to apply all filters
+            document.getElementById('searchInput').dispatchEvent(new Event('input'));
+        });
+    });
+</script>
+</body>
+</html>

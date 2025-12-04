@@ -1,0 +1,131 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #f8f9fa;
+    padding: 10px; /* was 20px */
+}
+
+.form-card {
+    max-width: 1100px; /* thoda compact */
+    margin: 10px auto; /* was 20px */
+    background: white;
+    border-radius: 8px; /* was 10px */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* softer shadow */
+    overflow: hidden;
+}
+
+.form-header {
+    background: linear-gradient(135deg, #01b6be, #0288d1);
+    color: white;
+    padding: 12px 18px; /* was 20px */
+    display: flex;
+    align-items: center;
+}
+
+.form-header i {
+    font-size: 1.3rem; /* was 1.5rem */
+    margin-right: 10px; /* was 15px */
+}
+
+.form-header h3 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.form-body {
+    padding: 18px; /* was 30px */
+}
+
+.form-section {
+    margin-bottom: 18px; /* was 30px */
+    padding: 12px; /* was 20px */
+    border: 1px solid #e0e0e0;
+    border-radius: 6px; /* was 8px */
+    background: #fafafa;
+}
+
+.section-title {
+    color: #01b6be;
+    border-bottom: 2px solid #01b6be;
+    padding-bottom: 6px; /* was 10px */
+    margin-bottom: 12px; /* was 20px */
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.form-control:read-only {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+.auto-fill-field {
+    background-color: #e3f2fd !important;
+}
+
+.calculated-field {
+    background-color: #e8f5e8 !important;
+    font-weight: bold;
+}
+
+.status-badge {
+    padding: 3px 10px; /* was 5px 12px */
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-draft {
+    background: #ffeb3b;
+    color: #333;
+}
+
+.status-submitted {
+    background: #2196f3;
+    color: white;
+}
+
+.status-approved {
+    background: #4caf50;
+    color: white;
+}
+
+.status-rejected {
+    background: #f44336;
+    color: white;
+}
+
+.btn-custom {
+    background: #01b6be;
+    color: white;
+    border: none;
+    padding: 8px 18px; /* was 10px 25px */
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.btn-custom:hover {
+    background: #0288d1;
+    color: white;
+}
+
+.claim-timeline {
+    border-left: 2px solid #01b6be; /* was 3px */
+    padding-left: 12px; /* was 20px */
+    margin-left: 5px; /* was 10px */
+}
+
+.timeline-item {
+    margin-bottom: 14px; /* was 20px */
+    position: relative;
+}
+
+.timeline-item:before {
+    content: '';
+    position: absolute;
+    left: -20px; /* was -26px */
+    top: 5px;
+    width: 10px; /* was 12px */
+    height: 10px;
+    border-radius: 50%;
+    background: #01b6be;
+}
