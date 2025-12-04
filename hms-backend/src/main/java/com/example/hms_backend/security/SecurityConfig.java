@@ -95,7 +95,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:5173","http://localhost:5175",
-                "http://localhost:5176","http://localhost:5174","https://*.railway.app")); // React dev server
+                "http://localhost:5176","http://localhost:5174","https://*.railway.app","https://incredible-playfulness-production-0e24.up.railway.app")); // React dev server
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
