@@ -69,7 +69,7 @@ public class SecurityConfig {
                                 "/css/**", "/javascript/**", "/images/**", "/vendors/**","/api/users/**","/api/department/**",
                                 "/api/assets/**","/api/health-package/**","/api/birth-report/**","/api/death-certificate/**",
                                 "/api/doctor-schedule/**","/api/ambulance/**","/api/driver/**","/api/prescriptions/**","/api/patients/**","/api/patients/all","/api/appointment/**","/api/notices/**","/api/attachment/**","/api/beds/**",
-                                "/api/doctor/**","/api/v1/**","/insurance/**","/api/invoice/**","/api/pathology/**" "/**" "/error**"
+                                "/api/doctor/**","/api/v1/**","/insurance/**","/api/invoice/**","/api/pathology/**" "/" "/error"
                         ).permitAll()
                         .requestMatchers("/ping","/api/rooms/**").permitAll()
                         .requestMatchers("/super_admin/**").hasRole("SUPER_ADMIN")
